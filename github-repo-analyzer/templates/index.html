@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Repo Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <h2>GitHub Repo Analyzer</h2>
+        <form method="post">
+            <input type="text" name="owner" placeholder="GitHub Username" required>
+            <input type="text" name="repo" placeholder="Repository Name" required>
+            <button type="submit">Analyze</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if result %}
+            <ul>
+                {% for key, value in result.items() %}
+                    <li><strong>{{ key.replace('_', ' ').title() }}</strong>: {{ value }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
