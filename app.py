@@ -1,11 +1,22 @@
 from flask import Flask, render_template, request
 import requests
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+
+# Get the GitHub token from environment
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+HEADERS = {
+    "Authorization": f"token {GITHUB_TOKEN}"
+} if GITHUB_TOKEN else {}
 
 app = Flask(__name__)
 
 def fetch_repo_stats(owner, repo):
     url = f"https://api.github.com/repos/{owner}/{repo}"
-    response = requests.get(url)
+    response = requests.get(url, headers=HEADERS)
     if response.status_code != 200:
         return None, f"Repo Error: {response.status_code} - {response.json().get('message', '')}"
     data = response.json()
@@ -26,7 +37,7 @@ def fetch_repo_stats(owner, repo):
 
 def fetch_user_info(username):
     url = f"https://api.github.com/users/{username}"
-    response = requests.get(url)
+    response = requests.get(url, headers=HEADERS)
     if response.status_code != 200:
         return None, f"User Error: {response.status_code} - {response.json().get('message', '')}"
     data = response.json()
@@ -64,4 +75,3 @@ def index():
 if __name__ == "__main__":
     print("✅ Flask app is starting...")
     app.run(debug=True)
-
